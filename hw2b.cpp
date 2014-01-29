@@ -26,7 +26,7 @@ int main(int argc, char*argv[]) {
 
   bool results[N];
 
-  #pragma omp parallel for 
+  #pragma omp parallel for schedule (dynamic, 32)
   for(int i=2; i<N; i++) {
     results[i] = is_prime(i);
   }
@@ -39,4 +39,5 @@ int main(int argc, char*argv[]) {
     if( results[i] ) cout << ", " << i;
   }
   cout << endl;
+
 }
