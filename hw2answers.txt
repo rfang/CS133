@@ -1,0 +1,147 @@
+Rachel Fang 
+104001868 
+
+!!!!!!N.B. Please be aware that because there were significant pauses due to lag in printing out the numbers, the data I collected for the full code was pretty much useless for analysis. I have listed two versions of data for each part -- one of which is without IO for the sake of showing that the parallelizing works. 
+
+1. 
+
+time ./hw2a 20000000 1
+real    0m49.451s
+user    0m24.996s
+sys     0m0.025s
+
+time ./hw2a 20000000 2
+real    0m39.132s
+user    0m25.381s
+sys     0m0.020s
+
+time ./hw2a 20000000 4
+real    0m49.320s
+user    0m27.487s
+sys     0m0.028s
+
+time ./hw2a 20000000 8
+real    0m28.141s
+user    0m29.220s
+sys     0m0.031s
+
+time ./hw2a 20000000 16
+real    0m46.359s
+user    0m51.480s
+sys     0m0.057s
+
+---------------------------
++ ./hw2a_noOut 20000000 1
+real    0m24.214s
+user    0m24.200s
+sys     0m0.005s
+
++ ./hw2a_noOut 20000000 2
+real    0m15.205s
+user    0m24.352s
+sys     0m0.005s
+
++ ./hw2a_noOut 20000000 4
+real    0m8.578s
+user    0m26.024s
+sys     0m0.012s
+
++ ./hw2a_noOut 20000000 8
+real    0m5.346s
+user    0m29.086s
+sys     0m0.012s
+
++ ./hw2a_noOut 20000000 16
+real    0m4.168s
+user    0m37.744s
+sys     0m0.035s
+
+2. 
+
+time ./hw2b 20000000 1
+real    0m56.717s
+user    0m28.808s
+sys     0m0.024s
+
+time ./hw2b 20000000 2
+real    0m41.276s
+user    0m26.285s
+sys     0m0.039s
+
+time ./hw2b 20000000 4
+real    0m45.968s
+user    0m28.774s
+sys     0m0.039s
+
+time ./hw2b 20000000 8
+real    0m39.760s
+user    0m32.744s
+sys     0m0.068s
+
+time ./hw2b 20000000 16
+real    0m47.355s
+user    0m49.846s
+sys     0m0.356s
+
+--------------------------
++ ./hw2b_noOut 20000000 1
+real    0m24.454s
+user    0m24.428s
+sys     0m0.013s
+
++ ./hw2b_noOut 20000000 2
+real    0m12.502s
+user    0m24.947s
+sys     0m0.012s
+
++ ./hw2b_noOut 20000000 4
+real    0m6.470s
+user    0m25.592s
+sys     0m0.011s
+
++ ./hw2b_noOut 20000000 8
+real    0m3.908s
+user    0m29.875s
+sys     0m0.022s
+
++ ./hw2b_noOut 20000000 16
+real    0m3.337s
+user    0m46.752s
+sys     0m0.335s
+
+we don't see a significant improvement with dynamic scheduling, if any, especially in the runs with fewer threads, since the chunk size is too small. Instead, it is possible that dynamic scheduling is simply adding overhead. 
+
+hw2b: chunk-size = 1 
+real    0m16.941s
+user    0m48.237s
+sys     0m0.355s
+
+hw2b: chunk-size = 2 
+real    0m12.681s
+user    0m44.203s
+sys     0m0.384s
+
+hw2b: chunk_size = 4
+real    0m18.458s
+user    0m43.781s
+sys     0m0.355s
+
+hw2b: chunk_size = 8
+real    0m11.920s
+user    0m42.864s
+sys     0m0.298s
+
+hw2b: chunk_size = 16
+real    0m11.732s
+user    0m37.357s
+sys     0m0.206s
+
+hw2b: chunk_size = 32
+real    0m11.535s
+user    0m42.683s
+sys     0m0.404s
+
+We can see from the reduction in real time that increasing chunk_size helps to an extent. At some point, however, the threads no longer have idle time. At this stage, improvement slows dramatically (after size=8 for the above results, though there is some noise from IO lag still). 
+
+3.
+There may be race conditions where it appears that the consumer has read more items, but in actually the buffer is still full, causing the producer to overwrite needed data. Vice versa, if the producer appears to have written data to the consumer, the consumer may read data it has already seen. Luckily, since we are only generating random numbers, it is not a huge deal (and if it exists, it will be very hard to detect) if the producer overwrites a number the consumer has not read yet. If the consumer often reads data it has already seen, this may become more evident in the data. 

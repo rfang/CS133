@@ -1,0 +1,3 @@
+Given K threads: Order the list of numbers into k groups. Find the prefix sums within those groups (have all values within a group be some sum plus an input x_in). The last sum of each group is it's x_out. With k groups, and given the known formulas for all the x_outs, you can calculate in log(k) time the x_in's for each group.Use the x_in values of each of the k groups to calculate the individual prefix sums. 
+Runtime is approximately O(N/k + log(k)) 
+Work done: total work is approximately 2N (plus some for the x_out calculations) operations, twice that of a sequential method. 
